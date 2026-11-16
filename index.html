@@ -67,7 +67,36 @@ html[data-inventory-loading] .main>:not(.topbar):not(#inventory-loading-state){d
 @media(max-width:1024px){.sidebar{position:relative}.sidebar nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));overflow:visible;gap:6px}.sidebar .nav-inventory{grid-column:1/-1}.sidebar .nav-inventory summary{min-height:44px}.sidebar .nav-inventory-items{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin:6px 0 4px;padding-left:8px}.sidebar nav>a{min-width:0;white-space:normal}}
 @media(max-width:420px){.sidebar .nav-inventory-items{grid-template-columns:1fr}.sidebar nav>a{font-size:12px}}
 @media(prefers-reduced-motion:reduce){.sidebar .nav-chevron{transition:none!important}}
-</style><link rel="stylesheet" href="section-heroes.css"></head>
+</style><link rel="stylesheet" href="section-heroes.css"><style id="dashboard-layout-refinement">
+/* Keep section navigation and the first indicators within the same view. */
+.section-hero {
+  min-height: 104px;
+  gap: 16px;
+  padding: 16px 22px;
+  margin-block: 3px 12px;
+}
+.section-hero-icon { width: 50px; height: 50px; }
+.section-hero-icon svg { width: 44px; height: 44px; }
+.main .section-hero h2 { margin-block: 3px 2px; }
+.main .data-connection {
+  border-radius: 6px;
+  margin-block: 0 12px;
+  flex-wrap: wrap;
+}
+.main :is(button, a, input, select):focus-visible {
+  outline: 2px solid #087a9e;
+  outline-offset: 3px;
+}
+.main :is(.kpi, .data-connection, #cie-table, #cc-comparison) {
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 600px) {
+  .section-hero { min-height: 0; padding: 14px; gap: 12px; }
+  .section-hero-icon { width: 38px; height: 38px; }
+  .section-hero-icon svg { width: 34px; height: 34px; }
+  .main .section-hero h2 { font-size: 22px; }
+}
+</style></head>
 <body>
   <div class="app-shell">
     <aside class="sidebar">
