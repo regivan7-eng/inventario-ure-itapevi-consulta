@@ -42,7 +42,17 @@
     if (path === '/api/centralizados/comparison' && method === 'GET') {
       try {
         const [sourceResponse, currentResponse, mod] = await Promise.all([
-          originalFetch('centralized-data.json'), window.fetch('/api/data'), import('./centralized-comparison.js')
+          (async () => {
+            try {
+              const r = await originalFetch('https://raw.githubusercontent.com/regivan7-eng/inventario-ure-itapevi-consulta/sync-data/candidates/centralized.json?t=' + Date.now(), {cache:'no-store'});
+              if (!r.ok) throw new Error('Fonte indisponível');
+              return r;
+            } catch (_) {
+              const r = await originalFetch('centralized-data.json');
+              const data = await r.json();
+              return Response.json({...data, stale:true, notice:'Exibindo a última cópia disponível; não foi possível conferir a atualização de Centralizados.'});
+            }
+          })(), window.fetch('/api/data'), import('./centralized-comparison.js')
         ]);
         const source = await sourceResponse.json();
         const current = currentResponse.ok ? await currentResponse.json() : {dataset:await (await window.fetch('dashboard_data.json')).json(),updatedAt:'2026-11-08T08:36:52.759Z'};
