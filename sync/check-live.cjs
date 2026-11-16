@@ -21,5 +21,16 @@ const {chromium} = require('playwright-core');
   if (!text.includes('Recebidos')) throw Error('Total de recebidos não foi carregado');
   if (!footer.includes(date)) throw Error('Fonte atualizada não foi refletida no painel: '+date);
   console.log('Comparativo atualizado carregado com sucesso.');
+  const retryPage=await browser.newPage();
+  let blocked=false;
+  await retryPage.route('https://script.google.com/macros/**', async route=>{
+    if(!blocked && route.request().url().includes('kind=inventory')) {blocked=true; await route.abort('failed');}
+    else await route.continue();
+  });
+  await retryPage.goto('https://regivan7-eng.github.io/inventario-ure-itapevi-consulta/?retrycheck='+Date.now(),{waitUntil:'domcontentloaded',timeout:60000});
+  await retryPage.waitForFunction(() => document.querySelector('#data-origin')?.textContent.includes('Base central'),null,{timeout:90000});
+  if (!blocked) throw Error('A falha simulada não ocorreu');
+  console.log('Reconexão automática após falha simulada: sucesso.');
+  await retryPage.close();
  } finally {await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1});
