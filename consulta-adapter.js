@@ -1,10 +1,10 @@
-/* Adaptador de consulta: nenhuma opera��o de grava��o � exposta. */
+/* Adaptador de consulta: nenhuma operação de gravação é exposta. */
 (() => {
   const ENDPOINT = 'https://script.google.com/macros/s/AKfycbzHKOqlm1SzBUQN6i46PUINo8twYtQYxM6kkla8pR1cW1BuhlxCi3F8YfwJFvR51KPS/exec';
   const originalFetch = window.fetch.bind(window);
   let queue = Promise.resolve();
   function readPublic(kind) {
-    if (!ENDPOINT) return Promise.reject(new Error('Consulta central ainda n�o configurada.'));
+    if (!ENDPOINT) return Promise.reject(new Error('Consulta central ainda não configurada.'));
     const task = queue.catch(() => {}).then(() => new Promise((resolve, reject) => {
       const script = document.createElement('script');
       const timer = setTimeout(() => finish(new Error('Tempo esgotado ao consultar o Google.')), 30000);
@@ -13,17 +13,17 @@
         if (error) reject(error); else resolve(result);
       }
       window.inventoryPublicCallback = result => {
-        if (!result?.ok || result.kind !== kind) return finish(new Error('Base central indispon�vel.'));
+        if (!result?.ok || result.kind !== kind) return finish(new Error('Base central indisponível.'));
         finish(null, result);
       };
-      script.onerror = () => finish(new Error('N�o foi poss�vel consultar a base central.'));
+      script.onerror = () => finish(new Error('Não foi possível consultar a base central.'));
       script.src = ENDPOINT + '?kind=' + encodeURIComponent(kind);
       document.head.append(script);
     })).then(async result => {
       const raw = atob(result.payload), bytes = Uint8Array.from(raw, c => c.charCodeAt(0));
       const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
       const dataset = JSON.parse(await new Response(stream).text());
-      if (!Array.isArray(dataset.records)) throw new Error('Conte�do da base inv�lido.');
+      if (!Array.isArray(dataset.records)) throw new Error('Conteúdo da base inválido.');
       return {dataset, updatedAt: result.updatedAt, canUpdate: false};
     });
     queue = task; return task;
@@ -46,11 +46,14 @@
             try {
               const r = await originalFetch('https://raw.githubusercontent.com/regivan7-eng/inventario-ure-itapevi-consulta/sync-data/candidates/centralized.json?t=' + Date.now(), {cache:'no-store'});
               if (!r.ok) throw new Error('Fonte indisponível');
-              return r;
+              const d = await r.json();
+              if (!Array.isArray(d.records) || !d.checkedAt) throw new Error('Fonte inválida');
+              if (Date.now() - Date.parse(d.checkedAt) > 72 * 60 * 60 * 1000) return Response.json({...d,stale:true,notice:'A origem de Centralizados não foi conferida nas últimas 72 horas.'});
+              return Response.json(d);
             } catch (_) {
               const r = await originalFetch('centralized-data.json');
-              const data = await r.json();
-              return Response.json({...data, stale:true, notice:'Exibindo a última cópia disponível; não foi possível conferir a atualização de Centralizados.'});
+              const d = await r.json();
+              return Response.json({...d,stale:true,notice:'Exibindo a última cópia disponível; não foi possível conferir a atualização de Centralizados.'});
             }
           })(), window.fetch('/api/data'), import('./centralized-comparison.js')
         ]);
@@ -63,8 +66,7 @@
       try { return Response.json(await readPublic(path.endsWith('blue-monitor') ? 'blue' : 'inventory')); }
       catch (error) { return Response.json({error:error.message}, {status:503}); }
     }
-    if (typeof path === 'string' && path.startsWith('/api/')) return Response.json({error:'Recurso indispon�vel nesta vers�o de consulta.'}, {status:503});
+    if (typeof path === 'string' && path.startsWith('/api/')) return Response.json({error:'Recurso indisponível nesta versão de consulta.'}, {status:503});
     return originalFetch(url, options);
   };
 })();
-
