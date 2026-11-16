@@ -113,7 +113,7 @@ async function init(){
  $('cc-category').onchange=e=>{state.category=e.target.value;state.model='';state.page=1;render();};$('cc-model').onchange=e=>{state.model=e.target.value;state.page=1;render();};
  $('cc-reset').onclick=()=>{Object.assign(state,{query:'',school:'',category:'',model:'',page:1});$('cc-search').value='';closeSchools();reconciliation.reset();render();};
  $('cc-table-mode').onclick=()=>{state.detail=!state.detail;state.sort='name';state.direction=1;render();};$('cc-prev').onclick=()=>{state.page--;renderTable();};$('cc-next').onclick=()=>{state.page++;renderTable();};$('cc-export').onclick=exportRows;
- try{const response=await fetch('/centralized-data.json',{cache:'no-store'});if(!response.ok)throw Error();const initial=await response.json();if(!data)setData(initial);}catch{$('cc-notice').textContent='Consultando a aba Centralizados NOVO…';$('cc-notice').hidden=false;}
+ try{const response=await fetch('centralized-data.json',{cache:'no-store'});if(!response.ok)throw Error();const initial=await response.json();if(!data)setData(initial);}catch{$('cc-notice').textContent='Consultando a aba Centralizados NOVO…';$('cc-notice').hidden=false;}
  const activate=()=>{if(location.hash==='#centralizados'&&(data?.refreshing||Date.now()-lastLoaded>60000))load();};window.addEventListener('hashchange',activate);document.querySelector('a[data-view="centralizados"]')?.addEventListener('click',activate);document.addEventListener('visibilitychange',()=>{if(!document.hidden)activate();});activate();
 }
 init().catch(error=>console.warn('Centralizados:',error.message));
