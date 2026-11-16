@@ -1,0 +1,47 @@
+name: Atualizar Equipamentos Centralizados
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/atualizar-centralizados.yml'
+      - 'sync/centralized-refresh.mjs'
+      - 'sync/centralized-source.mjs'
+      - 'sync/workbook-sheet.mjs'
+  schedule:
+    - cron: '10 11-21 * * 1-5'
+permissions:
+  contents: write
+concurrency:
+  group: inventario-sync-candidate
+  cancel-in-progress: false
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Instalar leitor da planilha
+        run: npm install --prefix sync --no-save --ignore-scripts fflate@0.8.2
+      - name: Conferir origem pública
+        run: node sync/centralized-refresh.mjs
+      - name: Publicar cópia validada
+        shell: bash
+        run: |
+          git fetch origin sync-data
+          git worktree add --detach /tmp/centralizados-sync origin/sync-data
+          mkdir -p /tmp/centralizados-sync/candidates
+          cp candidate/centralized.json /tmp/centralizados-sync/candidates/
+          cd /tmp/centralizados-sync
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add candidates/centralized.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Atualiza Centralizados validado'
+            git push origin HEAD:refs/heads/sync-data
+          fi
