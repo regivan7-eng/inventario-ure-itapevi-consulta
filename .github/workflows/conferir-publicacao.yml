@@ -2,7 +2,7 @@ name: Conferir página publicada
 on:
   workflow_dispatch:
   push:
-    paths: ['.github/workflows/conferir-publicacao.yml']
+    paths: ['.github/workflows/conferir-publicacao.yml', 'sync/check-live.cjs']
 permissions:
   contents: read
 jobs:
