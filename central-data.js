@@ -4,7 +4,7 @@
   const originalInput = document.getElementById("data-folder-input");
   let canUpdate = false;
   let publishButton = null;
-  let centralLoaded=false,centralLoad=null;
+  let centralLoaded=false,centralLoad=null,retryTimer=null,retryCount=0;
   const evolutionUI=import('./data-evolution-ui.js').catch(error=>{console.warn(error);return null;});
   const reflectData=async(kind,dataset,updatedAt)=>{try{const ui=await evolutionUI;ui?.showDataState({kind,dataset:dataset||(typeof DATA!=='undefined'?DATA:null),updatedAt,onRetry:loadCentralData});}catch(error){console.warn('Não foi possível atualizar os indicadores de conexão:',error);}};
 
@@ -87,7 +87,7 @@
       if (!response.ok) throw new Error(result.error || "Não foi possível consultar a base central.");
       canUpdate = Boolean(result.canUpdate);
       if (result.dataset) {
-        centralLoaded=true;
+        centralLoaded=true; retryCount=0; clearTimeout(retryTimer); retryTimer=null;
         finishInitialLoad();
         document.getElementById("data-origin").textContent = "Base central";
         window.setDashboardData?.(result.dataset);
@@ -105,6 +105,10 @@
       finishInitialLoad();showInitialFallback();
       status((centralLoaded?'A última base carregada foi mantida. ':'Base inicial em exibição. ')+(error.message||'A base central está indisponível no momento.')+' Use Tentar reconectar ou Update para tentar novamente.', "error");
       await reflectData('error');
+      if (!centralLoaded && retryCount < 3 && !retryTimer) {
+        const delay = [8000, 15000, 30000][retryCount++];
+        retryTimer = setTimeout(() => { retryTimer=null; loadCentralData(); }, delay);
+      }
       configureImport(canUpdate);
     }
   }
