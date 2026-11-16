@@ -31,6 +31,17 @@ const {chromium} = require('playwright-core');
   await retryPage.waitForFunction(() => document.querySelector('#data-origin')?.textContent.includes('Base central'),null,{timeout:90000});
   if (!blocked) throw Error('A falha simulada não ocorreu');
   console.log('Reconexão automática após falha simulada: sucesso.');
+  await retryPage.waitForFunction(() =>
+    [...document.styleSheets].some(sheet => sheet.href?.includes('/inventario-ure-itapevi-consulta/data-evolution.css')) &&
+    document.querySelector('#dashboard-layout-refinement'),null,{timeout:30000});
+  await retryPage.setViewportSize({width:1440,height:900});
+  const hero=retryPage.locator('.section-hero:visible').first();
+  const desktop=await hero.boundingBox();
+  if(!desktop || desktop.height>125) throw Error('Cabeçalho desktop fora da altura esperada');
+  await retryPage.setViewportSize({width:390,height:844});
+  const mobile=await hero.boundingBox();
+  if(!mobile || mobile.x+mobile.width>391) throw Error('Cabeçalho excede a largura no celular');
+  console.log('Estilos carregados, cabeçalhos verificados em 1440 e 390 px.');
   await retryPage.close();
  } finally {await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1});
