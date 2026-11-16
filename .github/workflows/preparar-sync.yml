@@ -1,6 +1,9 @@
 name: Preparar sincronização protegida
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/preparar-sync.yml']
   schedule:
     - cron: '0 11-21 * * 1-5'
 permissions:
@@ -20,6 +23,11 @@ jobs:
         with:
           node-version: '24'
       - run: node sync/candidate-v2.mjs
+      - name: Conferir também Centralizados
+        continue-on-error: true
+        run: |
+          npm install --prefix sync --no-save --ignore-scripts fflate@0.8.2
+          node sync/centralized-refresh.mjs
       - name: Publicar candidatos no ramo separado
         shell: bash
         run: |
@@ -27,10 +35,12 @@ jobs:
           git worktree add --detach /tmp/inventario-sync origin/sync-data
           mkdir -p /tmp/inventario-sync/candidates
           cp candidate/inventory.json candidate/blue-monitor.json /tmp/inventario-sync/candidates/
+          if [ -f candidate/centralized.json ]; then cp candidate/centralized.json /tmp/inventario-sync/candidates/; fi
           cd /tmp/inventario-sync
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add candidates/inventory.json candidates/blue-monitor.json
+          if [ -f candidates/centralized.json ]; then git add candidates/centralized.json; fi
           if ! git diff --cached --quiet; then
             git commit -m 'Prepara candidatos validados'
             git push origin HEAD:refs/heads/sync-data
