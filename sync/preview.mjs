@@ -11,8 +11,8 @@ for (const [kind,file] of [['inventory','dashboard_data.json.gz'],['blue-monitor
   console.log(kind+': '+folder.files.length+' arquivos encontrados.');
   const next=await parsePublicFiles(kind,await folder.download());
   const comparison=kind==='inventory'?compareDatasets(old,next):compareBlueDatasets(old,next);
-  console.log(JSON.stringify({kind,previous:old.records.length,current:next.records.length,warnings:comparison.warnings||[],errors:comparison.errors||[]}));
+  console.log('RESULT '+kind+' anterior='+old.records.length+' atual='+next.records.length+' avisos='+(comparison.warnings||[]).length+' erros='+(comparison.errors||[]).length);
   if((comparison.errors||[]).length||(comparison.warnings||[]).length)failed=true;
  } catch(e) {failed=true;console.error(kind+': '+(e.problems||[e.message]).join('; '));}
 }
-if(failed)process.exitCode=1;
+if(failed)process.exit(1); console.log('VERIFICACAO_CONCLUIDA');
