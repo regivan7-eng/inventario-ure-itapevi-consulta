@@ -21,7 +21,8 @@ for (const [kind,query] of [['inventory','inventory'],['blue-monitor','blue']]) 
  const report=kind==='inventory'?compareDatasets(old,next):compareBlueDatasets(old,next);
  if((report.errors||[]).length||(report.warnings||[]).length)throw Error(kind+': revisão necessária: '+JSON.stringify(report.warnings||report.errors));
  const oldRows=old.records.map(r=>sha(JSON.stringify(r))).sort(),newRows=next.records.map(r=>sha(JSON.stringify(r))).sort();
- const same=sha(JSON.stringify(oldRows))===sha(JSON.stringify(newRows));
+ const structure=d=>({schools:(d.schools||[]).map(x=>[String(x.cie||''),String(x.name||''),!!x.sem_dados]).sort(),workbooks:(d.workbooks||[]).map(x=>[String(x.arquivo||''),Number(x.linhas||0)]).sort()});
+ const same=sha(JSON.stringify(oldRows))===sha(JSON.stringify(newRows)) && sha(JSON.stringify(structure(old)))===sha(JSON.stringify(structure(next)));
  const published=kind==='inventory'&&!same?stampSchoolImports(old,next,next,{mode:'replace',email:'automatic-sync',name:'Atualização automática',at:new Date().toISOString()}):next;
  const payload=gzipSync(Buffer.from(JSON.stringify(published)),{level:9}).toString('base64');
  const envelope={kind,requestId:randomUUID(),createdAt:new Date().toISOString(),expectedUpdatedAt:current.updatedAt,expectedPayloadSha:sha(current.payload),payloadSha:sha(payload),sourceFingerprint:folder.fingerprint,records:next.records.length,files:folder.files.length,same,payload};
