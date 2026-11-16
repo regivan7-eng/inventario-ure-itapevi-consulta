@@ -7,7 +7,7 @@ const {chromium} = require('playwright-core');
   page.on('pageerror', err=>console.log('Erro:',err.message));
   await page.goto('https://regivan7-eng.github.io/inventario-ure-itapevi-consulta/?check='+Date.now()+'#centralizados',{waitUntil:'domcontentloaded',timeout:60000});
   await page.waitForFunction(() => document.querySelector('#cc-comparison')?.innerText.includes('Conciliação por escola'),{timeout:90000});
-  await page.waitForSelector('#data-origin');
+  await page.waitForFunction(() => document.querySelector('#data-origin')?.textContent.includes('Base central'),null,{timeout:90000});
   const origin=await page.locator('#data-origin').innerText();
   console.log('Origem da base:',origin);
   if(!origin.includes('Base central')) throw Error('Base central não foi carregada: '+origin);
