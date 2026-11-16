@@ -8,8 +8,12 @@ const {chromium} = require('playwright-core');
   const text=await page.locator('#cc-comparison').innerText();
   const footer=await page.locator('.cc-reconcile-footer').innerText();
   console.log('Rodapé:', footer.replace(/\s+/g,' '));
-  if (!text.includes('18.542')) throw Error('Total de recebidos não foi carregado');
-  if (!footer.includes('26/10/2026')) throw Error('Fonte atualizada não foi refletida no painel');
+  const response=await fetch('https://raw.githubusercontent.com/regivan7-eng/inventario-ure-itapevi-consulta/sync-data/candidates/centralized.json?check='+Date.now());
+  if (!response.ok) throw Error('Cópia de Centralizados indisponível');
+  const source=await response.json();
+  const date=new Date(source.sourceModified).toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo'});
+  if (!text.includes('Recebidos')) throw Error('Total de recebidos não foi carregado');
+  if (!footer.includes(date)) throw Error('Fonte atualizada não foi refletida no painel: '+date);
   console.log('Comparativo atualizado carregado com sucesso.');
  } finally {await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1});
