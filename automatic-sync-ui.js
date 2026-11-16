@@ -4,7 +4,7 @@ import {runAllUpdates} from './update-all.js';
 const names={inventory:'Inventário','blue-monitor':'Blue Monitor',centralizados:'Eq. Central.',all:'Todas as bases'};
 const date=value=>value?new Date(value).toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo'}):'Ainda não realizada';
 const node=(tag,text,className)=>{const el=document.createElement(tag);if(text!==undefined)el.textContent=text;if(className)el.className=className;return el;};
-const style=node('link');style.rel='stylesheet';style.href='/automatic-sync.css';document.head.append(style);
+const style=node('link');style.rel='stylesheet';style.href=new URL('./automatic-sync.css', import.meta.url).href;document.head.append(style);
 const host=node('div',undefined,'automatic-sync');host.setAttribute('aria-live','polite');
 const tools=node('div',undefined,'sync-tools'),checkButton=node('button','Verificar agora','sync-check-button');
 checkButton.type='button';checkButton.hidden=true;checkButton.setAttribute('aria-expanded','false');checkButton.setAttribute('aria-controls','sync-base-menu');
