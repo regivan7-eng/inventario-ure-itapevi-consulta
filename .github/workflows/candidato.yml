@@ -1,0 +1,20 @@
+name: Preparar candidato de atualização
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  preparar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: node sync/candidate.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: candidatos-inventario
+          path: candidate/
+          retention-days: 3
