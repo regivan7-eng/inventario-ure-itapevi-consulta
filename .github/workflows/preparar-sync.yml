@@ -1,0 +1,35 @@
+name: Preparar sincronização protegida
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: inventario-sync-candidate
+  cancel-in-progress: false
+jobs:
+  gerar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: node sync/candidate-v2.mjs
+      - name: Publicar candidatos no ramo separado
+        shell: bash
+        run: |
+          git fetch origin sync-data
+          git worktree add --detach /tmp/inventario-sync origin/sync-data
+          mkdir -p /tmp/inventario-sync/candidates
+          cp candidate/inventory.json candidate/blue-monitor.json /tmp/inventario-sync/candidates/
+          cd /tmp/inventario-sync
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add candidates/inventory.json candidates/blue-monitor.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Prepara candidatos validados'
+            git push origin HEAD:refs/heads/sync-data
+          fi
