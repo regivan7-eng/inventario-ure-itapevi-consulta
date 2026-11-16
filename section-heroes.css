@@ -1,0 +1,25 @@
+/* Cabeçalhos de seção alinhados à identidade de Centralizados. */
+.main>.section-hero-group{max-width:2400px;margin-left:auto;margin-right:auto}
+@media(min-width:2560px){.main>.section-hero-group{max-width:2800px}}
+.section-hero[hidden]{display:none!important}
+.section-hero{position:relative;display:flex;align-items:center;gap:24px;min-height:150px;margin:3px 0 18px;padding:24px 28px;border-radius:15px;overflow:hidden;background:linear-gradient(112deg,#0d3b68 0%,#124d7c 67%,#0b315b 100%);color:#fff;box-shadow:0 8px 24px #0b315b1c}
+.section-hero::after{content:'';position:absolute;right:-74px;top:-128px;width:300px;height:300px;border:32px solid #ffffff0d;border-radius:50%;pointer-events:none}
+.section-hero-icon{position:relative;z-index:1;display:grid;place-items:center;flex:none;width:74px;height:74px;color:#fff}
+.section-hero-icon svg{width:64px;height:64px}
+.section-hero-copy{position:relative;z-index:1;min-width:0}
+.section-hero .section-kicker{color:#b7e5f7;letter-spacing:.13em}
+.main .section-hero h2{margin:6px 0 5px;color:#fff;font-size:clamp(24px,1.9vw,34px);font-weight:650;line-height:1.2;letter-spacing:-.025em}
+.main .section-hero p{margin:0;color:#e0f0f9;font-size:clamp(13px,.9vw,16px);font-weight:450;line-height:1.55}
+@media(max-width:800px){.section-hero{gap:15px;min-height:0;padding:20px}.section-hero-icon{width:50px;height:50px}.section-hero-icon svg{width:48px;height:48px}.main .section-hero h2{font-size:24px}}
+@media(max-width:400px){.section-hero{align-items:flex-start;gap:12px;padding:18px 15px}.section-hero-icon{width:38px;height:38px}.section-hero-icon svg{width:36px;height:36px}.main .section-hero h2{font-size:21px}}
+
+
+
+/* Traços de circuito sutis, em plano de fundo, preservam a leitura. */
+.sidebar{background-color:var(--brand-navy,#00112b);background-image:linear-gradient(180deg,rgba(0,17,43,1) 0%,rgba(0,17,43,1) 30%,rgba(0,17,43,.85) 65%,rgba(0,17,43,.7) 100%),url("sidebar-hex.svg");background-position:center,center top;background-size:cover,180px auto;background-repeat:no-repeat,repeat}
+.section-hero,#view-centralizados .cc-heading.cc-hero{background-image:url("circuit-traces.svg"),linear-gradient(112deg,#0d3b68 0%,#124d7c 67%,#0b315b 100%);background-position:right center,center;background-size:660px auto,cover;background-repeat:no-repeat}
+
+@media(max-width:600px){.section-hero,#view-centralizados .cc-heading.cc-hero{background-size:440px auto,cover}}
+
+
+

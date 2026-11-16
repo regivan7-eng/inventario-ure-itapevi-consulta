@@ -1,0 +1,20 @@
+/* SEINTEC: cores extraídas da logo oficial. */
+:root{--brand-navy:#00112b;--brand-cyan:#35c2ff;--bg:#f3f8fc;--ink:#00112b;--muted:#5c7086;--line:#dce8f1;--navy:#00112b;--blue:#087da9;--cyan:#35c2ff;--shadow:0 10px 30px #00112b0d}
+.sidebar{background:var(--brand-navy)}
+.brand{display:flex;flex-direction:column;align-items:center;gap:10px;padding:0 4px 26px;text-align:center}
+.brand-logo{display:block;width:100%;max-width:184px;height:68px;object-fit:contain;border-radius:6px}
+.brand .ure-logo{width:54px;height:60px;object-fit:contain;background:#fff;padding:3px;border-radius:8px}
+.brand-copy{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;max-width:200px;text-align:center;gap:4px}
+.brand-copy strong{font-size:16px;line-height:1.25;letter-spacing:-.02em;color:#fff}
+.brand-copy small{margin:0;font-size:12px;line-height:1.35;letter-spacing:.045em;text-transform:uppercase;color:var(--brand-cyan)}
+nav a{color:#bdd6e8}nav a.active,nav a:hover{background:#10334e;color:#fff}nav a.active{box-shadow:inset 3px 0 var(--brand-cyan)}
+.sidebar-foot{border-color:#20405c;color:#bdd6e8}.sidebar-foot small{color:#9bbbd1}.status-dot{background:var(--brand-cyan)}
+.badge{background:#dff5ff;color:#00658b}.kpi-card.accent{border-top-color:var(--brand-cyan)}
+.bar-fill{background:linear-gradient(90deg,#087da9,var(--brand-cyan))}.bar-track{background:#e7f1f8}
+.eyebrow,.section-kicker,.text-link{color:#087299}
+.bm-type-option:hover,.bm-table tfoot th{background:#eaf6fc}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #087da9;outline-offset:3px}
+@media(max-width:720px){.brand{flex-direction:column;align-items:center;justify-content:center;gap:8px;padding-bottom:14px}.brand-logo{width:184px;max-width:70vw;flex:none}.brand .ure-logo{width:50px;height:55px;max-width:none}.brand-copy{width:100%;max-width:240px;align-items:center;text-align:center}.brand-copy strong{font-size:15px}.brand-copy small{font-size:11px}}
+#source-table .source-row > :first-child{text-align:left!important;justify-self:stretch;justify-content:flex-start}
+[data-school-sort]{font:inherit;color:inherit;background:transparent;border:0;padding:0;cursor:pointer;text-align:inherit}[data-school-sort]:focus-visible{outline:2px solid #35c2ff;outline-offset:4px}
+.bm-devices-table thead th:nth-child(1){width:21%}.bm-devices-table thead th:nth-child(3){width:17%}

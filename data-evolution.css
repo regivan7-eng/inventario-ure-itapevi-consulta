@@ -1,0 +1,100 @@
+/* Connectivity notices appear only when attention is needed. */
+.data-connection{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:12px 0;padding:8px 12px;border-left:2px solid #ab8a49;background:#faf8f1;color:#59440e}
+.data-connection[hidden]{display:none!important}.data-connection p{margin:0;font-size:.82rem;line-height:1.5}.data-connection button{flex-shrink:0}
+/* A secondary, compact section after the inventory analysis. */
+.main .updates-section{box-sizing:border-box;width:100%;max-width:1680px;margin-top:22px;padding:18px;display:block}
+.main #base-updates :is(h2,h3,.panel-subtitle){text-align:left!important;margin-inline:0!important}
+.updates-heading{margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--line,#dce4ee)}
+.main .updates-heading h2{font-size:18px;margin:0 0 5px}.updates-heading .panel-subtitle{margin:0;font-size:12px;line-height:1.5;max-width:100ch}
+.updates-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start;gap:20px}
+.updates-section .updates-block{min-width:0;margin:0;padding:0;background:none;border-radius:0;border:0;box-shadow:none}
+.updates-section .history-panel{padding-left:20px;border-left:1px solid var(--line,#dce4ee)}
+.updates-section .panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 10px;flex-wrap:wrap}
+.updates-section .panel-head h3{margin:0;font-size:15px;line-height:1.4;letter-spacing:-.01em}
+.updates-section .panel-head .panel-subtitle{font-size:12px;line-height:1.45;margin:4px 0 0}
+.updates-section #history-load{font-size:12px;padding:8px 10px;min-height:38px;margin-left:auto;white-space:nowrap}
+.evolution-metrics{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin:10px 0 12px}
+.evolution-metrics .update-stat{display:inline-flex;align-items:baseline;gap:6px;color:#52677d;font-size:12px;line-height:1.6}
+.evolution-metrics strong{font-size:20px;line-height:1.2;color:#17384d;font-variant-numeric:tabular-nums}
+.evolution-metrics .update-stat:last-child{color:#637487}.evolution-metrics .update-stat:last-child strong{color:inherit}
+.updates-section details{margin-top:10px}.updates-section summary{cursor:pointer;padding:8px 0;font-size:12px;font-weight:600;color:#28556a;line-height:1.5}
+.updates-section .updates-help{margin-top:14px;padding-top:8px;border-top:1px solid var(--line,#dce4ee)}
+.updates-help p{max-width:120ch;color:#60758b;font-size:12px;line-height:1.55;margin:4px 0 8px}
+.evolution-tools{display:grid;grid-template-columns:minmax(0,1fr) minmax(140px,.7fr);gap:6px 10px;align-items:center;margin:8px 0}
+.evolution-tools label{font-size:12px}.evolution-tools label:first-child{grid-column:1;grid-row:1}.evolution-tools input{grid-column:1;grid-row:2}.evolution-tools label:nth-of-type(2){grid-column:2;grid-row:1}.evolution-tools select{grid-column:2;grid-row:2}
+.evolution-tools input,.evolution-tools select{box-sizing:border-box;min-width:0;width:100%;padding:8px 10px;border:1px solid #a5b3c2;border-radius:7px;background:#fff;color:#17384d;font:inherit;font-size:12px;min-height:38px}
+.evolution-panel [role=status]{font-size:12px;color:#60758b;margin:6px 0}
+.evolution-table-wrap{max-width:100%;max-height:360px;overflow:auto;border:1px solid var(--line,#dce4ee);border-radius:8px;margin:8px 0}
+.evolution-table-wrap table{margin:0;width:100%;font-size:13px;line-height:1.45;border-collapse:collapse}
+.main #base-updates .evolution-table-wrap :is(th,td){padding:8px 10px;text-align:right!important;font-variant-numeric:tabular-nums;white-space:normal;overflow-wrap:break-word;vertical-align:top}
+.main #base-updates .evolution-table-wrap tr>:first-child{text-align:left!important}
+.evolution-table-wrap thead th{position:sticky;top:0;background:#edf3f7;color:#405b70;z-index:1;font-size:12px}
+.evolution-table-wrap tbody th{font-weight:400}.evolution-table-wrap tbody tr:nth-child(even){background:#f7f9fb}
+.updates-table-comparison,.updates-table-categories{max-width:620px}
+.updates-table-comparison table,.updates-table-categories table{table-layout:fixed}
+.updates-table-comparison tr>:first-child,.updates-table-categories tr>:first-child{width:40%}
+.updates-table-freshness table{table-layout:fixed;min-width:0}
+.updates-table-freshness tr>:first-child{width:48%}.updates-table-freshness tr>:nth-child(2){width:12%}.updates-table-freshness tr>:nth-child(3){width:40%}
+.main #base-updates .updates-table-freshness tr>:nth-child(n+3){text-align:left!important;overflow-wrap:anywhere}
+.updates-table-schools table{min-width:740px}.updates-table-schools tr>:first-child{width:30%}.main #base-updates .updates-table-schools tr>:last-child{text-align:left!important}
+.updates-dates{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;line-height:1.5;margin:6px 0 8px;color:#60758b}
+#history-content{font-size:13px;line-height:1.5}.updates-empty{color:#60758b;font-size:12px;line-height:1.5;margin:6px 0 10px}
+.evolution-warning{padding:8px 10px;background:#fff8e6;color:#59440e;border-radius:6px;font-size:12px}
+.updates-section :focus-visible,.data-connection :focus-visible{outline:3px solid #047c94;outline-offset:3px}
+@media(max-width:1200px){.updates-layout{grid-template-columns:minmax(0,1fr);gap:16px}.updates-section .history-panel{padding:14px 0 0;border-left:0;border-top:1px solid var(--line,#dce4ee)}}
+@media(max-width:600px){.main .updates-section{padding:14px}.updates-layout{gap:12px}.evolution-tools{grid-template-columns:1fr}.evolution-tools label,.evolution-tools input,.evolution-tools select{grid-column:1!important;grid-row:auto!important}.evolution-tools input{grid-row:2!important}.evolution-tools label:nth-of-type(2){grid-row:3!important}.evolution-tools select{grid-row:4!important}.updates-section .panel-head{gap:8px}.updates-section #history-load{margin-left:0}.updates-table-comparison table{min-width:340px}.data-connection{align-items:stretch;flex-direction:column}}
+@media print{.data-connection,.updates-section{display:none!important}}
+
+.main #base-updates .panel-head{flex-direction:row;align-items:center;justify-content:space-between;text-align:left}
+.main #base-updates .panel-head>div{width:auto;min-width:0;flex:1 1 160px}
+
+@media(max-width:600px){.updates-table-comparison table{min-width:0}.updates-table-comparison tr>:first-child{width:36%}.main #base-updates .updates-table-comparison :is(th,td){padding:8px 5px;font-size:12px}}
+
+/* Use the available page width, with school lookup between the summary and comparison. */
+.main #base-updates{max-width:none}
+#base-updates .updates-layout{grid-template-columns:minmax(210px,.65fr) minmax(0,1.25fr) minmax(0,1fr)}
+#base-updates .updates-lookup{padding-left:20px;border-left:1px solid var(--line,#dce4ee)}
+#base-updates .updates-lookup [role=status]{font-size:12px;color:#60758b;margin:6px 0}
+#base-updates .evolution-metrics{align-items:flex-start;flex-direction:column;gap:8px;margin-top:14px}
+#base-updates .updates-lookup .evolution-tools{margin-top:0}
+@media(max-width:1200px){
+ #base-updates .updates-layout{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr)}
+ #base-updates .history-panel{grid-column:1/-1;border-left:0;border-top:1px solid var(--line,#dce4ee);padding:14px 0 0}
+ #base-updates .history-panel #history-content{max-width:none}
+}
+@media(max-width:900px){
+ #base-updates .updates-layout{grid-template-columns:minmax(0,1fr)}
+ #base-updates .updates-lookup{padding:14px 0 0;border-left:0;border-top:1px solid var(--line,#dce4ee)}
+ #base-updates .evolution-metrics{flex-direction:row;align-items:baseline}
+}
+
+/* Compact metric cards for school freshness and version comparison. */
+.main #base-updates .evolution-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:stretch;margin:12px 0 0}
+.main #base-updates .evolution-metrics .update-stat{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:5px;padding:11px 10px;min-width:0;border:1px solid var(--line,#dce4ee);border-radius:9px;background:#f5f9fc;font-size:12px;line-height:1.4}
+.main #base-updates .evolution-metrics .update-stat strong{font-size:23px;line-height:1.2}
+.main #base-updates .evolution-metrics .update-stat>span{overflow-wrap:break-word}
+.main #base-updates .updates-comparison-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}
+.main #base-updates .updates-comparison-card{box-sizing:border-box;min-width:0;padding:11px 12px;border:1px solid var(--line,#dce4ee);border-radius:9px;background:#f5f9fc}
+.main #base-updates .updates-comparison-card h4{margin:0 0 8px;font-size:12px;line-height:1.4;color:#28556a;text-align:left}
+.updates-card-current,.updates-card-previous,.updates-card-change{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:11px;line-height:1.5;color:#60758b;font-variant-numeric:tabular-nums}
+.main #base-updates .updates-card-current{margin-bottom:6px}
+.main #base-updates .updates-card-current strong{font-size:22px;line-height:1.2;color:#17384d}
+.updates-card-change strong{color:#52677d;font-weight:600}
+@media(max-width:380px){.main #base-updates .updates-comparison-cards{grid-template-columns:minmax(0,1fr)}}
+
+/* Match the existing plain text sorting controls used throughout the dashboard. */
+[data-freshness-sort]{font:inherit;color:inherit;background:transparent;border:0;padding:0;cursor:pointer;text-align:inherit}
+[data-freshness-sort]:focus-visible{outline:2px solid #35c2ff;outline-offset:4px}
+
+/* Give school lookup and version comparison the space of the retired freshness cards. */
+.main #base-updates .updates-layout{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr)}
+#base-updates .updates-lookup{padding-left:0;border-left:0}
+#base-updates .history-panel{grid-column:auto;border-top:0;border-left:1px solid var(--line,#dce4ee);padding:0 0 0 20px}
+@media(max-width:900px){
+ .main #base-updates .updates-layout{grid-template-columns:minmax(0,1fr)}
+ #base-updates .updates-lookup{padding-top:0;border-top:0}
+ #base-updates .history-panel{grid-column:auto;padding:14px 0 0;border-left:0;border-top:1px solid var(--line,#dce4ee)}
+}
+
+.updates-table-freshness .publication-cell strong{display:block;font:inherit;font-weight:600;color:#17384d;line-height:1.45}
+.updates-table-freshness .publication-cell small{display:block;margin-top:3px;font-size:12px;line-height:1.45;color:#60758b;font-variant-numeric:tabular-nums}
