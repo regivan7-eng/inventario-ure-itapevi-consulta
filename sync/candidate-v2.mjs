@@ -4,6 +4,7 @@ import {compareDatasets,compareBlueDatasets} from './public/inventory-validation
 import {mkdir,writeFile} from 'node:fs/promises';
 import {gzipSync,gunzipSync} from 'node:zlib';
 import {createHash,randomUUID} from 'node:crypto';
+import {stampSchoolImports} from './public/data-evolution.js';
 const endpoint='https://script.google.com/macros/s/AKfycbzHKOqlm1SzBUQN6i46PUINo8twYtQYxM6kkla8pR1cW1BuhlxCi3F8YfwJFvR51KPS/exec';
 const sha=x=>createHash('sha256').update(x).digest('hex');
 await mkdir('candidate',{recursive:true});
@@ -21,7 +22,8 @@ for (const [kind,query] of [['inventory','inventory'],['blue-monitor','blue']]) 
  if((report.errors||[]).length||(report.warnings||[]).length)throw Error(kind+': revisão necessária: '+JSON.stringify(report.warnings||report.errors));
  const oldRows=old.records.map(r=>sha(JSON.stringify(r))).sort(),newRows=next.records.map(r=>sha(JSON.stringify(r))).sort();
  const same=sha(JSON.stringify(oldRows))===sha(JSON.stringify(newRows));
- const payload=gzipSync(Buffer.from(JSON.stringify(next)),{level:9}).toString('base64');
+ const published=kind==='inventory'&&!same?stampSchoolImports(old,next,next,{mode:'replace',email:'automatic-sync',name:'Atualização automática',at:new Date().toISOString()}):next;
+ const payload=gzipSync(Buffer.from(JSON.stringify(published)),{level:9}).toString('base64');
  const envelope={kind,requestId:randomUUID(),createdAt:new Date().toISOString(),expectedUpdatedAt:current.updatedAt,expectedPayloadSha:sha(current.payload),payloadSha:sha(payload),sourceFingerprint:folder.fingerprint,records:next.records.length,files:folder.files.length,same,payload};
  await writeFile('candidate/'+kind+'.json',JSON.stringify(envelope));
  console.log(JSON.stringify({kind,previous:old.records.length,current:next.records.length,warnings:0,same,expectedUpdatedAt:current.updatedAt}));
