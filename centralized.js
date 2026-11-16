@@ -86,7 +86,7 @@ async function load(force=false){
 }
 export function applyCentralizedUpdate(value){
  loadRevision++;
- canUpdate=!!value.canUpdate;comparison={...value.comparison,schools:value.comparison.schools.map(s=>({...s,name:displaySchoolName(s.name),inventory:s.inventory?{...s.inventory,name:displaySchoolName(s.inventory.name)}:null})),outsideSchools:value.comparison.outsideSchools?.map(s=>({...s,name:displaySchoolName(s.name)}))};reconciliation.clearError();setData(value.source);lastLoaded=Date.now();scheduleSourceCheck(value.source);
+ canUpdate=!!value.canUpdate;comparison={...value.comparison,schools:value.comparison.schools.map(s=>({...s,name:displaySchoolName(s.name),inventory:s.inventory?{...s.inventory,name:displaySchoolName(s.inventory.name)}:null})),outsideSchools:value.comparison.outsideSchools?.map(s=>({...s,name:displaySchoolName(s.name)}))};reconciliation.clearError();setData(value.source);if(value.inventoryFallback){const existing=$('cc-notice').hidden?'':$('cc-notice').textContent;$('cc-notice').textContent=[existing,'O Apps Script não respondeu a tempo; a comparação usa a última cópia de Inventário publicada no GHP.'].filter(Boolean).join(' ');$('cc-notice').hidden=false;}lastLoaded=Date.now();scheduleSourceCheck(value.source);
 }
 function scheduleSourceCheck(source){
  clearTimeout(sourcePoll);if(!source?.refreshing)return;
