@@ -3,8 +3,14 @@ const {chromium} = require('playwright-core');
  const browser = await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
  try {
   const page = await browser.newPage();
+  page.on('console', msg => { if (msg.type()==='error' || msg.type()==='warning') console.log('Console:',msg.type(),msg.text().slice(0,300)); });
+  page.on('pageerror', err=>console.log('Erro:',err.message));
   await page.goto('https://regivan7-eng.github.io/inventario-ure-itapevi-consulta/?check='+Date.now()+'#centralizados',{waitUntil:'domcontentloaded',timeout:60000});
   await page.waitForFunction(() => document.querySelector('#cc-comparison')?.innerText.includes('Conciliação por escola'),{timeout:90000});
+  await page.waitForSelector('#data-origin');
+  const origin=await page.locator('#data-origin').innerText();
+  console.log('Origem da base:',origin);
+  if(!origin.includes('Base central')) throw Error('Base central não foi carregada: '+origin);
   const text=await page.locator('#cc-comparison').innerText();
   const footer=await page.locator('.cc-reconcile-footer').innerText();
   console.log('Rodapé:', footer.replace(/\s+/g,' '));
