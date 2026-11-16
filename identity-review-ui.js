@@ -23,7 +23,7 @@ function draw(){
 }
 export function installIdentityReview(){
  if(installed)return;const quality=document.getElementById('view-quality');if(!quality)return;installed=true;
- const css=document.createElement('link');css.rel='stylesheet';css.href='/identity-review.css';document.head.append(css);
+ const css=document.createElement('link');css.rel='stylesheet';css.href=new URL('./identity-review.css', import.meta.url).href;document.head.append(css);
  panel=make('section');panel.id='identity-review';panel.className='panel identity-review';
  const details=make('details');summary=make('summary','Identificação a revisar');details.append(summary);
  details.append(make('p','CIE e URE ausentes foram completados no sistema: CIE do nome do arquivo e URE Itapevi. Linhas residuais sem identificação não entram na contagem de equipamentos. Os arquivos originais não foram alterados. Revise as linhas abaixo e corrija as planilhas de origem; após reimportar os arquivos corrigidos, as pendências deixam de aparecer.'));
