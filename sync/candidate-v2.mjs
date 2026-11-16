@@ -1,0 +1,28 @@
+import {openPublicFolder} from './public-source.mjs';
+import {parsePublicFiles} from './source-import.mjs';
+import {compareDatasets,compareBlueDatasets} from './public/inventory-validation.js';
+import {mkdir,writeFile} from 'node:fs/promises';
+import {gzipSync,gunzipSync} from 'node:zlib';
+import {createHash,randomUUID} from 'node:crypto';
+const endpoint='https://script.google.com/macros/s/AKfycbzHKOqlm1SzBUQN6i46PUINo8twYtQYxM6kkla8pR1cW1BuhlxCi3F8YfwJFvR51KPS/exec';
+const sha=x=>createHash('sha256').update(x).digest('hex');
+await mkdir('candidate',{recursive:true});
+for (const [kind,query] of [['inventory','inventory'],['blue-monitor','blue']]) {
+ const response=await fetch(endpoint+'?kind='+query,{signal:AbortSignal.timeout(90000)});
+ if(!response.ok) throw Error(kind+': base central indisponível');
+ const text=await response.text(), prefix='inventoryPublicCallback(';
+ if(!text.startsWith(prefix)||!text.endsWith(');'))throw Error(kind+': resposta central inválida');
+ const current=JSON.parse(text.slice(prefix.length,-2));
+ if(!current.ok||current.kind!==query||typeof current.updatedAt!=='string')throw Error(kind+': base central não confirmada');
+ const old=JSON.parse(gunzipSync(Buffer.from(current.payload,'base64')).toString('utf8'));
+ const folder=await openPublicFolder(kind);
+ const next=await parsePublicFiles(kind,await folder.download());
+ const report=kind==='inventory'?compareDatasets(old,next):compareBlueDatasets(old,next);
+ if((report.errors||[]).length||(report.warnings||[]).length)throw Error(kind+': revisão necessária: '+JSON.stringify(report.warnings||report.errors));
+ const oldRows=old.records.map(r=>sha(JSON.stringify(r))).sort(),newRows=next.records.map(r=>sha(JSON.stringify(r))).sort();
+ const same=sha(JSON.stringify(oldRows))===sha(JSON.stringify(newRows));
+ const payload=gzipSync(Buffer.from(JSON.stringify(next)),{level:9}).toString('base64');
+ const envelope={kind,requestId:randomUUID(),createdAt:new Date().toISOString(),expectedUpdatedAt:current.updatedAt,expectedPayloadSha:sha(current.payload),payloadSha:sha(payload),sourceFingerprint:folder.fingerprint,records:next.records.length,files:folder.files.length,same,payload};
+ await writeFile('candidate/'+kind+'.json',JSON.stringify(envelope));
+ console.log(JSON.stringify({kind,previous:old.records.length,current:next.records.length,warnings:0,same,expectedUpdatedAt:current.updatedAt}));
+}
