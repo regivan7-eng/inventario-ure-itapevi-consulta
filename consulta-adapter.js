@@ -4,6 +4,13 @@
   const SHAREPOINT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzLMqg0yh6ujbx-w1kcmLs20a5H6JCDU3cfEy2CPDTOitieAb7wBeg7pAo9HYRwjKt0/exec';
   const originalFetch = window.fetch.bind(window);
   let queue = Promise.resolve();
+  function withTimeout(promise, timeout, message) {
+    let timer;
+    return Promise.race([
+      Promise.resolve(promise),
+      new Promise((_, reject) => { timer = setTimeout(() => reject(new Error(message)), timeout); })
+    ]).finally(() => clearTimeout(timer));
+  }
   function readPublic(endpoint, kind, timeout = 30000) {
     const task = queue.catch(() => {}).then(() => new Promise((resolve, reject) => {
       const script = document.createElement('script');
@@ -50,14 +57,14 @@
     if (path === '/api/session' && method === 'GET') return Response.json({canUpdate:false});
     if (path === '/api/centralizados/comparison' && method === 'GET') {
       try {
-        const [sourceResponse, currentResponse, mod] = await Promise.all([
+        const [sourceResponse, currentResult, mod] = await Promise.all([
           (async () => {
             try {
               let d;
               try {
                 ({dataset: d} = await readSharePoint('centralized'));
               } catch (_) {
-                const r = await originalFetch('https://raw.githubusercontent.com/regivan7-eng/inventario-ure-itapevi-consulta/sync-data/candidates/centralized.json?t=' + Date.now(), {cache:'no-store'});
+                const r = await withTimeout(originalFetch('https://raw.githubusercontent.com/regivan7-eng/inventario-ure-itapevi-consulta/sync-data/candidates/centralized.json?t=' + Date.now(), {cache:'no-store'}), 8000, 'Tempo esgotado ao consultar a base central.');
                 if (!r.ok) throw new Error('Fonte indisponível');
                 d = await r.json();
               }
@@ -65,15 +72,25 @@
               if (Date.now() - Date.parse(d.checkedAt) > 72 * 60 * 60 * 1000) return Response.json({...d,stale:true,notice:'A origem de Centralizados não foi conferida nas últimas 72 horas.'});
               return Response.json(d);
             } catch (_) {
-              const r = await originalFetch('centralized-data.json');
+              const r = await withTimeout(originalFetch('centralized-data.json', {cache:'no-store'}), 8000, 'Tempo esgotado ao carregar a última base central disponível.');
+              if (!r.ok) throw new Error('Última cópia de Centralizados indisponível.');
               const d = await r.json();
               return Response.json({...d,stale:true,notice:'Exibindo a última cópia disponível; não foi possível conferir a atualização de Centralizados.'});
             }
-          })(), window.fetch('/api/data'), import('./centralized-comparison.js')
+          })(),
+          withTimeout(window.fetch('/api/data'), 20000, 'A consulta do Inventário excedeu o tempo limite.')
+            .then(async response => response.ok ? {data:await response.json(),fallback:false} : {data:null,fallback:true})
+            .catch(() => ({data:null,fallback:true})),
+          import('./centralized-comparison.js')
         ]);
         const source = await sourceResponse.json();
-        const current = currentResponse.ok ? await currentResponse.json() : {dataset:await (await window.fetch('dashboard_data.json')).json(),updatedAt:'2026-11-08T08:36:52.759Z'};
-        return Response.json({source, comparison:mod.buildCentralizedComparison(source,current),canUpdate:false});
+        let current = currentResult.data;
+        if (!current) {
+          const snapshot = await withTimeout(window.fetch('dashboard_data.json'), 10000, 'A última cópia do Inventário excedeu o tempo limite.');
+          if (!snapshot.ok) throw new Error('Última cópia do Inventário indisponível.');
+          current = {dataset:await snapshot.json(),updatedAt:'2026-11-08T08:36:52.759Z'};
+        }
+        return Response.json({source,comparison:mod.buildCentralizedComparison(source,current),canUpdate:false,inventoryFallback:currentResult.fallback});
       } catch(error) { return Response.json({error:error.message},{status:503}); }
     }
     if ((path === '/api/data' || path === '/api/blue-monitor') && method === 'GET') {
