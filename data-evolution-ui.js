@@ -42,7 +42,7 @@ function table(headers,data,kind='summary'){
 function init(){
  if(panel)return;
  installIdentityReview();
- const css=document.createElement('link');css.rel='stylesheet';css.href='/data-evolution.css';document.head.append(css);
+ const css=document.createElement('link');css.rel='stylesheet';css.href=new URL('./data-evolution.css', import.meta.url).href;document.head.append(css);
  banner=node('section',undefined,'data-connection');banner.id='data-connection';banner.setAttribute('aria-label','Origem dos dados');connectionText=node('p');connectionText.setAttribute('role','status');retry=node('button','Tentar reconectar','ghost-btn');retry.type='button';retry.addEventListener('click',()=>state.onRetry?.());banner.append(connectionText,retry);
  const filters=document.querySelector('main .filters')||document.getElementById('view-overview');filters.before(banner);
  const details=node('details'),toggle=node('summary','Consultar escolas');details.append(toggle);
